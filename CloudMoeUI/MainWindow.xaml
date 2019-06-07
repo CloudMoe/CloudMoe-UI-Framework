@@ -11,15 +11,14 @@
     xmlns:local="clr-namespace:CloudMoeUI"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winFormsIntegration="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+    xmlns:winForms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
     Title="CloudMoeUIFramework"
     local:EnableDragHelper.EnableDrag="False"
     ShowTitleBar="False"
     Background="Transparent"
     AllowsTransparency="True"
     BorderThickness="1"
-    BorderBrush="#33808080"
-    NonActiveBorderBrush="#80808080"
-    ShowMaxRestoreButton="True"
     WindowTransitionsEnabled="True"
     WindowTransitionCompleted="MetroWindow_WindowTransitionCompleted"
     Topmost="True"
@@ -27,10 +26,20 @@
     MinWidth="170"
     Height="480"
     Width="320"
-    mc:Ignorable="d">
+    BorderBrush="#80000000"
+    NonActiveBorderBrush="#33000000"
+    ResizeMode="CanResize"
+    IsWindowDraggable="True"
+    ShowMinButton="True"
+    ShowMaxRestoreButton="True"
+    mc:Ignorable="d"
+    Opacity="1">
+    <!--GlowBrush="#40000000"
+    NonActiveGlowBrush="#20000000"-->
     <!--MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
     MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"-->
     <Controls:MetroWindow.WindowButtonCommands>
+        <!--<Controls:WindowButtonCommands x:Name="WinBtnCmd" Margin="0,0,0,0" Template="{DynamicResource MahApps.Metro.Templates.WindowButtonCommands.Win10}" />-->
         <Controls:WindowButtonCommands x:Name="WinBtnCmd" Margin="0,0,0,0" Style="{DynamicResource MahApps.Metro.Styles.WindowButtonCommands.Win10}" />
     </Controls:MetroWindow.WindowButtonCommands>
     <WindowChrome.WindowChrome>
@@ -45,6 +54,10 @@
         Background="Transparent"
         Margin="0,0,0,0"
     >
+        <!--<winFormsIntegration:WindowsFormsHost
+            x:Name="wfh">
+            
+        </winFormsIntegration:WindowsFormsHost>-->
         <Rectangle
             x:Name="BlurRectangle"
             HorizontalAlignment="Stretch"
@@ -52,12 +65,12 @@
             Fill="#001F1F1F"
             Opacity="1">
             <Rectangle.Effect>
-                <local:NoiseEffect Ratio="0.125" />
+                <local:NoiseEffect x:Name="NoiseEffectObject" Ratio="0.125" IsLight="True" />
             </Rectangle.Effect>
         </Rectangle>
         <Grid
             x:Name="TitleBarColor"
-            Background="#55000000"
+            Background="#40000000"
             Height="30" 
             VerticalAlignment="Top"
         />

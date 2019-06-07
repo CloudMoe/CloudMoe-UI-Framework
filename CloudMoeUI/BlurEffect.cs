@@ -42,14 +42,16 @@ namespace CloudMoeUI
             }
         }
 
-        public static void EnableWin7ExtendAeroGlass(Window obj)
+        public static void EnableWin7ExtendAeroGlass(Visual visual)
         {
             try
             {
                 // 为WPF程序获取窗口句柄
-                var windowInteropHelper = new WindowInteropHelper(obj);
-                IntPtr handle = windowInteropHelper.Handle;
-                HwndSource mainWindowSrc = HwndSource.FromHwnd(handle);
+                //var windowInteropHelper = new WindowInteropHelper(obj);
+                //IntPtr handle = windowInteropHelper.Handle;
+                var visualHelperIntPtr = ((HwndSource)PresentationSource.FromVisual(visual)).Handle;
+
+                HwndSource mainWindowSrc = HwndSource.FromHwnd(visualHelperIntPtr);
 
                 var bb = new DwmBlurbehind
                 {
@@ -58,12 +60,12 @@ namespace CloudMoeUI
                 };
 
 
-                DwmEnableBlurBehindWindow(handle, ref bb);
+                DwmEnableBlurBehindWindow(visualHelperIntPtr, ref bb);
 
                 const int dwmwaNcrenderingPolicy = 2;
                 var dwmncrpDisabled = 2;
 
-                DwmSetWindowAttribute(handle, dwmwaNcrenderingPolicy, ref dwmncrpDisabled, sizeof(int));
+                DwmSetWindowAttribute(visualHelperIntPtr, dwmwaNcrenderingPolicy, ref dwmncrpDisabled, sizeof(int));
             }
             catch (DllNotFoundException)
             {
@@ -71,14 +73,16 @@ namespace CloudMoeUI
             }
         }
 
-        public static void DisableWin7ExtendAeroGlass(Window obj)
+        public static void DisableWin7ExtendAeroGlass(Visual visual)
         {
             try
             {
                 // 为WPF程序获取窗口句柄
-                var windowInteropHelper = new WindowInteropHelper(obj);
-                IntPtr handle = windowInteropHelper.Handle;
-                HwndSource mainWindowSrc = HwndSource.FromHwnd(handle);
+                //var windowInteropHelper = new WindowInteropHelper(obj);
+                //IntPtr handle = windowInteropHelper.Handle;
+                var visualHelperIntPtr = ((HwndSource)PresentationSource.FromVisual(visual)).Handle;
+
+                HwndSource mainWindowSrc = HwndSource.FromHwnd(visualHelperIntPtr);
 
                 var bb = new DwmBlurbehind
                 {
@@ -87,12 +91,12 @@ namespace CloudMoeUI
                 };
 
 
-                DwmEnableBlurBehindWindow(handle, ref bb);
+                DwmEnableBlurBehindWindow(visualHelperIntPtr, ref bb);
 
                 const int dwmwaNcrenderingPolicy = 2;
                 var dwmncrpDisabled = 2;
 
-                DwmSetWindowAttribute(handle, dwmwaNcrenderingPolicy, ref dwmncrpDisabled, sizeof(int));
+                DwmSetWindowAttribute(visualHelperIntPtr, dwmwaNcrenderingPolicy, ref dwmncrpDisabled, sizeof(int));
             }
             catch (DllNotFoundException)
             {
@@ -141,9 +145,13 @@ namespace CloudMoeUI
         [DllImport("user32.dll")]
         public static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
 
-        public static void Win10EnableBlur(Window obj)
+        public static void Win10EnableBlur(Visual visual)
         {
-            var windowHelper = new WindowInteropHelper(obj);
+            //var windowHelper = new WindowInteropHelper(obj);
+            //var windowHelperIntPtr = windowHelper.Handle;
+
+            var visualHelperIntPtr = ((HwndSource)PresentationSource.FromVisual(visual)).Handle;
+            //((HwndSource)PresentationSource.FromVisual(uielement)).Handle
 
             var accent = new AccentPolicy { AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND };
 
@@ -155,9 +163,10 @@ namespace CloudMoeUI
                 Console.WriteLine("Allowed use Acrylic Effect.");
                 //MessageBox.Show("Allowed use Acrylic Effect.");
 
-                int _blurOpacity = 32; /* 0-255 如果为0，颜色不能设置纯黑000000 */
-                int _blurBackgroundColor = 0x000000; /* Drak BGR color format */
-                                                     //int _blurBackgroundColor = 0xE6E6E6; /* Drak BGR color format */
+                int _blurOpacity = 0; /* 0-255 如果为0，颜色不能设置纯黑000000 */
+                // int _blurOpacity = 32; /* 0-255 如果为0，颜色不能设置纯黑000000 */
+                int _blurBackgroundColor = 0xFFFFFF; /* Drak BGR color format */
+                // int _blurBackgroundColor = 0xE6E6E6; /* Drak BGR color format */
 
                 accent.AccentState = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND;
 
@@ -176,14 +185,18 @@ namespace CloudMoeUI
                 Data = accentPtr
             };
 
-            SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+            SetWindowCompositionAttribute(visualHelperIntPtr, ref data);
 
             Marshal.FreeHGlobal(accentPtr);
         }
 
-        public static void Win10DisableBlur(Window obj)
+        public static void Win10DisableBlur(Visual visual)
         {
-            var windowHelper = new WindowInteropHelper(obj);
+            //var windowHelper = new WindowInteropHelper(obj);
+            //var windowHelperIntPtr = windowHelper.Handle;
+
+            var visualHelperIntPtr = ((HwndSource)PresentationSource.FromVisual(visual)).Handle;
+            //((HwndSource)PresentationSource.FromVisual(uielement)).Handle
 
             var accent = new AccentPolicy { AccentState = (AccentState)(0) };
 
@@ -199,7 +212,7 @@ namespace CloudMoeUI
                 Data = accentPtr
             };
 
-            SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+            SetWindowCompositionAttribute(visualHelperIntPtr, ref data);
 
             Marshal.FreeHGlobal(accentPtr);
         }
@@ -271,7 +284,7 @@ namespace CloudMoeUI
 
         //General
 
-        public static void GeneralBlurSwitcher(Window obj, bool is_enable)
+        public static void GeneralBlurSwitcher(Visual visual, bool is_enable)
         {
             try
             {
@@ -280,12 +293,12 @@ namespace CloudMoeUI
                     //Win7或者Vista（PS：Vista大概不能用了吧~(=ﾟωﾟ)ﾉ）
                     if (is_enable == true)
                     {
-                        EnableWin7ExtendAeroGlass(obj);
+                        EnableWin7ExtendAeroGlass(visual);
                         //GlassWindow.AeroGlassCompositionEnabled = true;
                     }
                     else
                     {
-                        DisableWin7ExtendAeroGlass(obj);
+                        DisableWin7ExtendAeroGlass(visual);
                         //GlassWindow.AeroGlassCompositionEnabled = false;
                     }
                 }
@@ -294,12 +307,12 @@ namespace CloudMoeUI
                     //Win8及以上（PS：其实只有Win10能用(*ﾉωﾉ)）
                     if (is_enable == true)
                     {
-                        Win10EnableBlur(obj);
+                        Win10EnableBlur(visual);
                         //Win10AcrylicEnableBlur(obj);
                     }
                     else
                     {
-                        Win10DisableBlur(obj);
+                        Win10DisableBlur(visual);
                     }
                 }
             }

@@ -46,7 +46,7 @@ namespace CloudMoeUI
 
         private void TitleBarBG_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && ParentWindow.ShowMaxRestoreButton == true)
             {
                 ParentWindow.MaximiseSwitcher();
             }
@@ -54,7 +54,7 @@ namespace CloudMoeUI
 
         private void TitleBarBG_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && ParentWindow.IsWindowDraggable == true)
             {
                 ParentWindow.DragMove();
             }
